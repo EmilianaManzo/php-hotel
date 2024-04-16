@@ -40,13 +40,24 @@
 
     ];
 
-    // foreach($hotels as $hotel){
-    //   $name = $hotel['name'];
-    //   $description = $hotel['description'];
-    //   $parking = $hotel['parking'];
-    //   $vote =$hotel['vote'];
-    //   $distance_to_center =$hotel['distance_to_center'];
-    // }
+    $vote = isset($_GET['vote']) ? $_GET['vote'] : 0;
+    
+    if(!isset($_GET['parking'])){
+      foreach($hotels as $hotel){
+        if($hotel['vote'] >= $vote){
+          $filtered_hotels[] = $hotel;
+        }
+      }
+    }else{
+      foreach($hotels as $hotel){
+        if($hotel['parking'] && $hotel['vote'] >= $vote){
+          $filtered_hotels[] = $hotel;
+        }
+      }
+    }
+    
+  
+
   
 ?>
 
@@ -60,19 +71,51 @@
   <title>PHP Hotel</title>
 </head>
 <body>
-  <div class="container">
+  <div class="container p-5 ">
+    <div class="row mb-3 ">
+      <h1>HOTELS</h1>
+    </div>
+
+    <div class="row mb-3 ">
+      <form action="index.php" method="GET">
+        <div class="d-flex">
+
+        <div class="me-5">
+            <input class="form-check-input" type="checkbox" id="parking" name="parking">
+            <label class="form-check-label" for="parking">
+              Solo con parcheggio
+            </label>
+          </div>
+          <div>
+            
+          Voto: 
+            <?php for($i = 0; $i <= 5; $i++): ?>
+              <input class="form-check-input" type="radio" name="vote" id="vote<?php echo $i ?>" value="<?php echo $i ?>">
+              <label class="form-check-label me-3" for="vote<?php echo $i ?>"> <?php echo $i ?> </label>
+            <?php endfor; ?>
+
+          </div>
+
+          <button type="submit" class="btn btn-primary ">Cerca</button>
+        </div>
+        
+      </form>
+    </div>
+
     <div class="row">
+
+      
+      <?php foreach($filtered_hotels as  $hotel): ?>
       <div class="col d-flex ">
-        <?php foreach($hotels as  $hotel): ?>
-        <div class="card">
+        <div class="card p-3">
           <h1><?php echo $hotel['name'] ?></h1>
           <p><?php echo $hotel['description'] ?></p>
           <p>Parcheggio: <?php echo $hotel['parking'] ? 'Si' : 'No' ?></p>
           <p>Voto: <?php echo $hotel['vote'] ?></p>
-          <p>Distanza dal centro: <?php echo $hotel['distance_to_center'] ?></p>
+          <p>Distanza dal centro: <?php echo $hotel['distance_to_center'] ?> km</p>
         </div>
-        <?php endforeach ?>
       </div>
+      <?php endforeach ?>
     </div>
   </div>
 </body>
